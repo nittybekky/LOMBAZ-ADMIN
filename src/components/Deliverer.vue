@@ -7,8 +7,8 @@
         <input
           type="text"
           class="form-control"
-          id="title"
-          v-model="currentDeliverer.title"
+          id="fullname"
+          v-model="currentDeliverer.user['Fullname']"
         />
       </div>
 
@@ -18,34 +18,34 @@
           type="text"
           class="form-control"
           id="description"
-          v-model="currentDeliverer.description"
+          v-model="currentDeliverer.user['AccountStatus']"
         />
       </div>
 
       <div class="form-group">
         <label><strong>Status:</strong></label>
-        {{ currentDeliverer.published ? "Published" : "Pending" }}
+        {{ currentDeliverer.user.AccountStatus == "Verified" ? "Verified" : "Pending" }}
       </div>
     </form>
 
     <button
       class="badge badge-primary mr-2"
-      v-if="currentDeliverer.published"
-      @click="updatePublished(false)"
+      v-if="currentDeliverer.user.AccountStatus == 'Verified'"
+      @click="updatePublished('Unverified')"
     >
       UnPublish
     </button>
     <button
       v-else
       class="badge badge-primary mr-2"
-      @click="updatePublished(true)"
+      @click="updatePublished('Verified')"
     >
       Publish
     </button>
 
-    <button class="badge badge-danger mr-2" @click="deleteDeliverer">
+    <!-- <button class="badge badge-danger mr-2" @click="deleteDeliverer">
       Delete
-    </button>
+    </button> -->
 
     <button type="submit" class="badge badge-success" @click="updateDeliverer">
       Update
@@ -79,12 +79,12 @@ export default {
   },
   methods: {
     updatePublished(status) {
-      DataService.update(this.currentDeliverer.key, {
-        published: status,
+      DataService.update(encodeURI((this.currentDeliverer.key)+"/Profile"), {
+        AccountStatus: status,
       })
         .then(() => {
-          this.currentDeliverer.published = status;
-          this.message = "The status was updated successfully!";
+          this.currentDeliverer.user.AccountStatus = status;
+          this.message = "User status was updated successfully!";
         })
         .catch((e) => {
           console.log(e);
@@ -93,13 +93,13 @@ export default {
 
     updateDeliverer() {
       const data = {
-        title: this.currentDeliverer.title,
-        description: this.currentDeliverer.description,
+        AccountStatus:  this.currentDeliverer.user.AccountStatus,
+        Fullname: this.currentDeliverer.user.Fullname,
       };
 
-      DelivererDataService.update(this.currentDeliverer.key, data)
+      DataService.update(encodeURI((this.currentDeliverer.key)+"/Profile"), data)
         .then(() => {
-          this.message = "The eliverer was updated successfully!";
+          this.message = "The Deliverer was updated successfully!";
         })
         .catch((e) => {
           console.log(e);
@@ -107,7 +107,7 @@ export default {
     },
 
     deleteDeliverer() {
-      DelivererDataService.delete(this.currentDeliverer.key)
+      DataService.delete(this.currentDeliverer.key)
         .then(() => {
           this.$emit("refreshList");
         })

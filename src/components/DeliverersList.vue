@@ -10,13 +10,16 @@
           :key="index"
           @click="setActiveDeliverer(deliverer, index)"
         >
-          {{ deliverer.FullName }}
+          {{ deliverer.key }} <br />
+          {{ deliverer.user.Fullname }}
+
+         
         </li>
       </ul>
 
-      <button class="m-3 btn btn-sm btn-danger" @click="removeAllDeliverers">
+      <!-- <button class="m-3 btn btn-sm btn-danger" @click="removeAllDeliverers">
         Remove All
-      </button>
+      </button> -->
     </div>
     <div class="col-md-6">
       <div v-if="currentDeliverer">
@@ -48,30 +51,30 @@ export default {
     };
   },
   methods: {
-      onDataChange(items) {
-      let _deliverers = [];
+    //   onDataChange(items) {
+    //   let _deliverers = [];
 
-      items.forEach((item) => {
-        let key = item.key;
-        let data = item.val().Profile;
-        console.log(key);
-        // debugger
-          // console.log("items is:\n", JSON.stringify(items, null, 2));
-        // let AccountStatus = item.val().Profile.AccountStatus
-        _deliverers.push({
-          // key: key,
-          // // title: data.profile.email,
-          // //  status: data.AccountStatus,
-          // status: AccountStatus,
-          // email: data.Email,
-          data
-        });
-      });
+    //   items.forEach((item) => {
+    //     let key = item.key;
+    //     let data = item.val().Profile;
+    //     console.log(key);
+    //     // debugger
+    //       // console.log("items is:\n", JSON.stringify(items, null, 2));
+    //     // let AccountStatus = item.val().Profile.AccountStatus
+    //     _deliverers.push({
+    //       // key: key,
+    //       // // title: data.profile.email,
+    //       // //  status: data.AccountStatus,
+    //       // status: AccountStatus,
+    //       // email: data.Email,
+    //       data
+    //     });
+    //   });
       
-       this.deliverers = _deliverers;
-      //  console.log(JSON.stringify(this.data))
-        console.log(this.data)
-     },
+    //    this.deliverers = _deliverers;
+    //   //  console.log(JSON.stringify(this.data))
+    //     console.log(this.data)
+    //  },
 
 
     // onDataChange(items) {
@@ -112,6 +115,46 @@ export default {
     //   this.deliverers = _deliverers
 
     // },
+
+//     onDataChange(snapshot) {
+//   const items = snapshot.val();
+//   // console.log("items is:\n", JSON.stringify(items, null, 2));
+        
+//   let _deliverers = [];
+//  Object.values(items).forEach((item) => {
+//     // let item = items[key];
+//     let one  = item.Profile;
+    
+//     // console.log(item.Profile.Email);
+//     // let data = items.val().Profile;
+//     // _deliverers.push({
+//     //   // key: key,
+//     //   status: data.AccountStatus,
+//     //   email: data.Email,
+//     // });
+//   });
+
+//   this.deliverers = _deliverers;
+// },
+
+onDataChange(snapshot) {
+    
+      let data = snapshot.val();
+      console.log(data);
+      let _deliverers = [];
+      Object.keys(data).forEach(key => {
+         _deliverers.push({
+         key: key,
+         user: data[key].Profile,
+          // text: data[key].text}
+         });
+      });
+      this.deliverers = _deliverers;
+
+     
+
+    },
+
 
     refreshList() {
       this.currentDeliverer = null;
